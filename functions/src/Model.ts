@@ -28,7 +28,7 @@ export interface HistorialSalida {
   matricula: string;
   hora: Date;
   localizacion: Cordenadas;
-  status: "A TIEMPO" | "ANTICIPADA" | "EXTRA";
+  status: "A TIEMPO" | "ANTICIPADA";
 }
 
 export interface CheckRequest {

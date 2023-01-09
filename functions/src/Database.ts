@@ -54,13 +54,41 @@ export async function checarEntrada(checkrequest: CheckRequest): Promise<Respues
   }
 }
 
-export async function checarPartida(checkrequest: CheckRequest) {
-  const historial_salida: HistorialSalida = {
-    hora: new Date(),
-    localizacion: checkrequest.localizacion,
-    matricula: checkrequest.matricula,
-  };
-  return await Firestore.collection("HistorialSalida").add(historial_salida);
+export async function checarPartida(checkrequest: CheckRequest): Promise<RespuestaChecador> {
+  const dialaboral = await buscarDiaLaboral(checkrequest);
+
+  if(dialaboral){
+    const horaActual = obtenerHoraActual()
+
+    const historialsalida:HistorialSalida ={
+      hora: new Date(),
+     matricula:checkrequest.matricula,
+     status: horaActual<dialaboral.salida ? 'ANTICIPADA':'A TIEMPO',
+     localizacion:checkrequest.localizacion,
+    }
+
+    const data = await Firestore.collection("HistorialSalida").add(historialsalida);
+
+    if(data){
+      return new RespuestaChecador({
+        estado:"Salida Registrada Con Exito",
+        mensaje: 'Que tenga un Excelente Dia ;)'
+      })
+    } else {
+      throw new RespuestaChecador({
+        estado: 'Error inesperado.',
+        mensaje: `No se pudo registrar la Salida. Por favor inténtelo de nuevo.`
+      });
+
+    }
+
+  } else{
+    throw new RespuestaChecador({
+      estado: 'Empleado no labora.',
+      mensaje: `El empleado con la matrícula ${checkrequest.matricula} no labora el día ${nombreDiaLaboral()}.`
+    });
+  }
+
 }
 
 export async function buscarDiaLaboral(checkrequest: CheckRequest): Promise<DiaLaboral | null> {
@@ -73,7 +101,7 @@ export async function buscarDiaLaboral(checkrequest: CheckRequest): Promise<DiaL
 
   throw new RespuestaChecador({
     estado: 'Matrícula no existe.',
-    mensaje: `No se encontró la matrícula ${checkrequest.matricula}. Asegúrese que los datos ean correctos.`
+    mensaje: `No se encontró la matrícula ${checkrequest.matricula}. Asegúrese que los datos sean correctos.`
   });
 }
 
