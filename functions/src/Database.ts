@@ -92,17 +92,17 @@ export async function checarPartida(checkrequest: CheckRequest): Promise<Respues
 }
 
 export async function buscarDiaLaboral(checkrequest: CheckRequest): Promise<DiaLaboral | null> {
-  const doc = await Firestore.collection("Horario").doc(checkrequest.matricula).get();
-  const horario = doc.data() as Horario;
+  const doc = await Firestore.doc(`Horario/${checkrequest.matricula}`).get();
 
-  if(doc.exists){    
+  if(doc.exists){
+    const horario = doc.data() as Horario;    
     return horario && horario[nombreDiaLaboral()] || null;
+  } else {
+    throw new RespuestaChecador({
+      estado: 'Matrícula no existe.',
+      mensaje: `No se encontró la matrícula ${checkrequest.matricula}. Asegúrese que los datos sean correctos.`
+    });
   }
-
-  throw new RespuestaChecador({
-    estado: 'Matrícula no existe.',
-    mensaje: `No se encontró la matrícula ${checkrequest.matricula}. Asegúrese que los datos sean correctos.`
-  });
 }
 
 function nombreDiaLaboral(): Dia {
