@@ -1,4 +1,5 @@
 import * as Firebase from "firebase-admin";
+import { ConsultaHistorial } from "./HistorialRequest";
 import {
   CheckRequest,
   Dia,
@@ -112,4 +113,27 @@ function nombreDiaLaboral(): Dia {
 function obtenerHoraActual(): number {
   const hoy = new Date();
   return hoy.getHours() * 60 + hoy.getMinutes();
+}
+
+export async function consultarEntrada(Consulhistori:ConsultaHistorial): Promise<HistorialEntrada[]>{
+  
+
+  const data = await Firestore.collection("HistorialEntrada").where("hora",">=",Consulhistori.fechadesde).where("hora","<=",Consulhistori.fechaasta).get();
+  return data.docs as any
+
+}
+
+export async function consultarSalida(Consulhistori:ConsultaHistorial): Promise<HistorialSalida[]>{
+  
+
+  const data = await Firestore.collection("HistorialSalida").where("hora",">=",Consulhistori.fechadesde).where("hora","<=",Consulhistori.fechaasta).get();
+  return data.docs as any
+
+}
+
+export async function consultarhistorico(Consulhistori:ConsultaHistorial): Promise<(HistorialEntrada | HistorialSalida)[]>{
+
+ const entradas = await consultarEntrada(Consulhistori);
+ const salidas  =   await consultarSalida(Consulhistori);
+return [...entradas,...salidas]
 }
