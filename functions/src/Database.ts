@@ -107,7 +107,7 @@ export async function buscarDiaLaboral(checkrequest: CheckRequest): Promise<DiaL
 }
 
 function nombreDiaLaboral(): Dia {
-  return new Date().toLocaleDateString('ex-MX', {weekday: 'long'}) as Dia;
+  return sanitizeString(new Date().toLocaleDateString('es-MX', {weekday: 'long'})) as Dia;
 }
 
 function obtenerHoraActual(): number {
@@ -136,4 +136,11 @@ export async function consultarhistorico(Consulhistori:ConsultaHistorial): Promi
  const entradas = await consultarEntrada(Consulhistori);
  const salidas  =   await consultarSalida(Consulhistori);
 return [...entradas,...salidas]
+}
+
+export function sanitizeString(str: string): string {
+  return str
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
 }
