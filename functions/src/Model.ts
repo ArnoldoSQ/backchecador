@@ -10,25 +10,25 @@ export interface Empleado {
 }
 
 export interface Horario {
-  lunes?: DiaLaboral,
-  martes?: DiaLaboral,
-  miercoles?: DiaLaboral,
-  jueves?: DiaLaboral,
-  viernes?: DiaLaboral,
+  lunes?: DiaLaboral;
+  martes?: DiaLaboral;
+  miercoles?: DiaLaboral;
+  jueves?: DiaLaboral;
+  viernes?: DiaLaboral;
 }
 
 export interface HistorialEntrada {
   matricula: string;
   hora: Date;
   localizacion: Cordenadas;
-  status: "LLEGADA" | "RETARDO";
+  status: 'LLEGADA' | 'RETARDO';
 }
 
 export interface HistorialSalida {
   matricula: string;
   hora: Date;
   localizacion: Cordenadas;
-  status: "A TIEMPO" | "ANTICIPADA";
+  status: 'A TIEMPO' | 'ANTICIPADA';
 }
 
 export interface CheckRequest {
@@ -48,8 +48,8 @@ export interface Login {
 }
 
 export interface DiaLaboral{
-  entrada: number,
-  salida: number,
+  entrada: number;
+  salida: number;
 }
 
 export type Dia = 'lunes' |'martes' |'miercoles' |'jueves' |'viernes';
