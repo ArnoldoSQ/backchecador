@@ -30,7 +30,8 @@ export async function checarEntrada(checkrequest: CheckRequest): Promise<Respues
             hora: new Date(),
             matricula: checkrequest.matricula,
             status: horaActual > diaLaboral.entrada ? 'RETARDO' : 'LLEGADA',
-            localizacion: checkrequest.localizacion
+            localizacion: checkrequest.localizacion,
+            nombre:diaLaboral.nombre
         }
 
         const data = await Firestore.collection("HistorialEntrada").add(historial);
@@ -66,6 +67,7 @@ export async function checarPartida(checkrequest: CheckRequest): Promise<Respues
             matricula: checkrequest.matricula,
             status: horaActual < dialaboral.salida ? 'ANTICIPADA' : 'A TIEMPO',
             localizacion: checkrequest.localizacion,
+            nombre:dialaboral.nombre
         }
 
         const data = await Firestore.collection("HistorialSalida").add(historialsalida);
@@ -97,7 +99,7 @@ export async function buscarDiaLaboral(checkrequest: CheckRequest): Promise<DiaL
 
     if (doc.exists) {
         const horario = doc.data() as Horario;
-        return horario && horario[nombreDiaLaboral()] || null;
+        return horario && horario[nombreDiaLaboral()] && ({...horario[nombreDiaLaboral()], nombre: horario.nombre}) || null as any;
     } else {
         throw new RespuestaChecador({
             estado: 'Matrícula no existe.',

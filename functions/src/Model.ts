@@ -15,10 +15,12 @@ export interface Horario {
   miercoles?: DiaLaboral;
   jueves?: DiaLaboral;
   viernes?: DiaLaboral;
+  nombre: string;
 }
 
 export interface HistorialEntrada {
   matricula: string;
+  nombre:string;
   hora: Date;
   localizacion: Cordenadas;
   status: 'LLEGADA' | 'RETARDO';
@@ -26,6 +28,7 @@ export interface HistorialEntrada {
 
 export interface HistorialSalida {
   matricula: string;
+  nombre: string;
   hora: Date;
   localizacion: Cordenadas;
   status: 'A TIEMPO' | 'ANTICIPADA';
@@ -50,6 +53,7 @@ export interface Login {
 export interface DiaLaboral{
   entrada: number;
   salida: number;
+  nombre:string;
 }
 
 export type Dia = 'lunes' |'martes' |'miercoles' |'jueves' |'viernes';
