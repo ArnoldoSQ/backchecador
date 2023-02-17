@@ -16,6 +16,7 @@ export interface Horario {
   jueves?: DiaLaboral;
   viernes?: DiaLaboral;
   nombre: string;
+  password:string;
 }
 
 export interface HistorialEntrada {

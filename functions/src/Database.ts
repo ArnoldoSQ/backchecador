@@ -99,7 +99,16 @@ export async function buscarDiaLaboral(checkrequest: CheckRequest): Promise<DiaL
 
     if (doc.exists) {
         const horario = doc.data() as Horario;
-        return horario && horario[nombreDiaLaboral()] && ({...horario[nombreDiaLaboral()], nombre: horario.nombre}) || null as any;
+        if(horario.password == checkrequest.contraseña){
+            return horario && horario[nombreDiaLaboral()] && ({...horario[nombreDiaLaboral()], nombre: horario.nombre}) || null as any;
+        }else{
+            throw new RespuestaChecador({
+                estado: 'Contraseña invalida.',
+                mensaje: `No es correcta la contraseña de la matricula ${checkrequest.matricula}. Asegúrese que los datos sean correctos.`
+            });
+
+        }
+       
     } else {
         throw new RespuestaChecador({
             estado: 'Matrícula no existe.',
