@@ -31,7 +31,7 @@ export async function checarEntrada(checkrequest: CheckRequest): Promise<Respues
             matricula: checkrequest.matricula,
             status: horaActual > diaLaboral.entrada ? 'RETARDO' : 'LLEGADA',
             localizacion: checkrequest.localizacion,
-            nombre:diaLaboral.nombre
+            nombre: diaLaboral.nombre
         }
 
         const data = await Firestore.collection("HistorialEntrada").add(historial);
@@ -67,7 +67,7 @@ export async function checarPartida(checkrequest: CheckRequest): Promise<Respues
             matricula: checkrequest.matricula,
             status: horaActual < dialaboral.salida ? 'ANTICIPADA' : 'A TIEMPO',
             localizacion: checkrequest.localizacion,
-            nombre:dialaboral.nombre
+            nombre: dialaboral.nombre
         }
 
         const data = await Firestore.collection("HistorialSalida").add(historialsalida);
@@ -99,16 +99,16 @@ export async function buscarDiaLaboral(checkrequest: CheckRequest): Promise<DiaL
 
     if (doc.exists) {
         const horario = doc.data() as Horario;
-        if(horario.password == checkrequest.contraseña){
-            return horario && horario[nombreDiaLaboral()] && ({...horario[nombreDiaLaboral()], nombre: horario.nombre}) || null as any;
-        }else{
+        if (horario.password == checkrequest.contraseña) {
+            return horario && horario[nombreDiaLaboral()] && ({ ...horario[nombreDiaLaboral()], nombre: horario.nombre }) || null as any;
+        } else {
             throw new RespuestaChecador({
                 estado: 'Contraseña invalida.',
                 mensaje: `No es correcta la contraseña de la matricula ${checkrequest.matricula}. Asegúrese que los datos sean correctos.`
             });
 
         }
-       
+
     } else {
         throw new RespuestaChecador({
             estado: 'Matrícula no existe.',
@@ -132,7 +132,7 @@ export async function consultarEntrada(Consulhistori: ConsultaHistorial): Promis
         .where("hora", "<=", new Date(Consulhistori.fechaasta))
         .get();
 
-    return data.docs.map(d => d.data() as HistorialEntrada);
+    return data.docs.map(d => mapHistorial(d.data() as any));
 }
 
 export async function consultarSalida(Consulhistori: ConsultaHistorial): Promise<HistorialSalida[]> {
@@ -140,8 +140,7 @@ export async function consultarSalida(Consulhistori: ConsultaHistorial): Promise
         .where("hora", ">=", new Date(Consulhistori.fechadesde))
         .where("hora", "<=", new Date(Consulhistori.fechaasta))
         .get();
-
-    return data.docs.map(d => d.data() as HistorialSalida);
+    return data.docs.map(d => mapHistorial(d.data() as any));
 }
 
 export async function consultarhistorico(Consulhistori: ConsultaHistorial): Promise<(HistorialEntrada | HistorialSalida)[]> {
@@ -155,4 +154,16 @@ export function sanitizeString(str: string): string {
         .toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "");
+}
+
+function mapHistorial(historial: (HistorialEntrada | HistorialSalida) & {
+    hora: FirebaseFirestore.Timestamp;
+}): any {
+    return {
+        hora: historial.hora.toDate(),
+        localizacion: historial.localizacion,
+        matricula: historial.matricula,
+        nombre: historial.nombre,
+        status: historial.status,
+    }
 }
