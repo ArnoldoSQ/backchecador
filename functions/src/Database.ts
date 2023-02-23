@@ -27,7 +27,7 @@ export async function checarEntrada(checkrequest: CheckRequest): Promise<Respues
         const horaActual = obtenerHoraActual();
 
         const historial: HistorialEntrada = {
-            hora: mapFechaString(new Date()),
+            hora: Date.now(),
             matricula: checkrequest.matricula,
             status: horaActual > diaLaboral.entrada ? 'RETARDO' : 'LLEGADA',
             localizacion: checkrequest.localizacion,
@@ -63,7 +63,7 @@ export async function checarPartida(checkrequest: CheckRequest): Promise<Respues
         const horaActual = obtenerHoraActual()
 
         const historialsalida: HistorialSalida = {
-            hora: mapFechaString(new Date()),
+            hora: Date.now(),
             matricula: checkrequest.matricula,
             status: horaActual < dialaboral.salida ? 'ANTICIPADA' : 'A TIEMPO',
             localizacion: checkrequest.localizacion,
@@ -128,8 +128,8 @@ function obtenerHoraActual(): number {
 
 export async function consultarEntrada(Consulhistori: ConsultaHistorial): Promise<HistorialEntrada[]> {
     const data = await Firestore.collection("HistorialEntrada")
-        .where("hora", ">=", new Date(Consulhistori.fechadesde))
-        .where("hora", "<=", new Date(Consulhistori.fechaasta))
+        .where("hora", ">=", Consulhistori.fechadesde)
+        .where("hora", "<=", Consulhistori.fechaasta)
         .get();
 
     return data.docs.map(d => d.data() as any);
@@ -137,8 +137,8 @@ export async function consultarEntrada(Consulhistori: ConsultaHistorial): Promis
 
 export async function consultarSalida(Consulhistori: ConsultaHistorial): Promise<HistorialSalida[]> {
     const data = await Firestore.collection("HistorialSalida")
-        .where("hora", ">=", new Date(Consulhistori.fechadesde))
-        .where("hora", "<=", new Date(Consulhistori.fechaasta))
+        .where("hora", ">=", Consulhistori.fechadesde)
+        .where("hora", "<=", Consulhistori.fechaasta)
         .get();
     return data.docs.map(d => d.data() as any);
 }
@@ -154,8 +154,4 @@ export function sanitizeString(str: string): string {
         .toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "");
-}
-
-function mapFechaString(date: Date): string{
-    return `${JSON.parse(JSON.stringify(new Date(date))).replace('Z', '')}+01:00`;
 }

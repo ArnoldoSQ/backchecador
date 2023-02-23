@@ -1,4 +1,4 @@
 export interface ConsultaHistorial{
- fechadesde:Date;
- fechaasta:Date;  
+ fechadesde: number;
+ fechaasta: number;  
 }
