@@ -27,7 +27,7 @@ export async function checarEntrada(checkrequest: CheckRequest): Promise<Respues
         const horaActual = obtenerHoraActual();
 
         const historial: HistorialEntrada = {
-            hora: new Date(),
+            hora: mapFechaString(new Date()),
             matricula: checkrequest.matricula,
             status: horaActual > diaLaboral.entrada ? 'RETARDO' : 'LLEGADA',
             localizacion: checkrequest.localizacion,
@@ -63,7 +63,7 @@ export async function checarPartida(checkrequest: CheckRequest): Promise<Respues
         const horaActual = obtenerHoraActual()
 
         const historialsalida: HistorialSalida = {
-            hora: new Date(),
+            hora: mapFechaString(new Date()),
             matricula: checkrequest.matricula,
             status: horaActual < dialaboral.salida ? 'ANTICIPADA' : 'A TIEMPO',
             localizacion: checkrequest.localizacion,
@@ -132,7 +132,7 @@ export async function consultarEntrada(Consulhistori: ConsultaHistorial): Promis
         .where("hora", "<=", new Date(Consulhistori.fechaasta))
         .get();
 
-    return data.docs.map(d => mapHistorial(d.data() as any));
+    return data.docs.map(d => d.data() as any);
 }
 
 export async function consultarSalida(Consulhistori: ConsultaHistorial): Promise<HistorialSalida[]> {
@@ -140,7 +140,7 @@ export async function consultarSalida(Consulhistori: ConsultaHistorial): Promise
         .where("hora", ">=", new Date(Consulhistori.fechadesde))
         .where("hora", "<=", new Date(Consulhistori.fechaasta))
         .get();
-    return data.docs.map(d => mapHistorial(d.data() as any));
+    return data.docs.map(d => d.data() as any);
 }
 
 export async function consultarhistorico(Consulhistori: ConsultaHistorial): Promise<(HistorialEntrada | HistorialSalida)[]> {
@@ -156,14 +156,6 @@ export function sanitizeString(str: string): string {
         .replace(/[\u0300-\u036f]/g, "");
 }
 
-function mapHistorial(historial: (HistorialEntrada | HistorialSalida) & {
-    hora: FirebaseFirestore.Timestamp;
-}): any {
-    return {
-        hora: historial.hora.toDate(),
-        localizacion: historial.localizacion,
-        matricula: historial.matricula,
-        nombre: historial.nombre,
-        status: historial.status,
-    }
+function mapFechaString(date: Date): string{
+    return `${JSON.parse(JSON.stringify(new Date(date))).replace('Z', '')}+01:00`;
 }

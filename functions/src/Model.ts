@@ -22,7 +22,7 @@ export interface Horario {
 export interface HistorialEntrada {
   matricula: string;
   nombre:string;
-  hora: Date;
+  hora: string;
   localizacion: Cordenadas;
   status: 'LLEGADA' | 'RETARDO';
 }
@@ -30,7 +30,7 @@ export interface HistorialEntrada {
 export interface HistorialSalida {
   matricula: string;
   nombre: string;
-  hora: Date;
+  hora: string;
   localizacion: Cordenadas;
   status: 'A TIEMPO' | 'ANTICIPADA';
 }
