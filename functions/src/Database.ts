@@ -122,7 +122,7 @@ function nombreDiaLaboral(): Dia {
 }
 
 function obtenerHoraActual(): number {
-    const hoy = new Date();
+    const hoy = new Date(`${new Date().toISOString().replace('Z', '')}+01:00`);
     return hoy.getHours() * 60 + hoy.getMinutes();
 }
 
