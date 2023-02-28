@@ -29,7 +29,7 @@ export async function checarEntrada(checkrequest: CheckRequest): Promise<Respues
         const historial: HistorialEntrada = {
             hora: Date.now(),
             matricula: checkrequest.matricula,
-            status: horaActual > diaLaboral.entrada ? 'RETARDO' : 'LLEGADA',
+            status: horaActual <= diaLaboral.entrada ? 'RETARDO' : 'LLEGADA',
             localizacion: checkrequest.localizacion,
             nombre: diaLaboral.nombre
         }
@@ -65,7 +65,7 @@ export async function checarPartida(checkrequest: CheckRequest): Promise<Respues
         const historialsalida: HistorialSalida = {
             hora: Date.now(),
             matricula: checkrequest.matricula,
-            status: horaActual < dialaboral.salida ? 'ANTICIPADA' : 'A TIEMPO',
+            status: horaActual <= dialaboral.salida ? 'ANTICIPADA' : 'A TIEMPO',
             localizacion: checkrequest.localizacion,
             nombre: dialaboral.nombre
         }
