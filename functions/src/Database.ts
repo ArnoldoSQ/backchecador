@@ -65,7 +65,7 @@ export async function checarPartida(checkrequest: CheckRequest): Promise<Respues
         const historialsalida: HistorialSalida = {
             hora: Date.now(),
             matricula: checkrequest.matricula,
-            status: horaActual <= dialaboral.salida ? 'ANTICIPADA' : 'A TIEMPO',
+            status: horaActual >= dialaboral.salida ? 'ANTICIPADA' : 'A TIEMPO',
             localizacion: checkrequest.localizacion,
             nombre: dialaboral.nombre
         }
