@@ -129,7 +129,7 @@ function obtenerHoraActual(): number {
 export async function consultarEntrada(Consulhistori: ConsultaHistorial): Promise<HistorialEntrada[]> {
     const data = await Firestore.collection("HistorialEntrada")
         .where("hora", ">=", Consulhistori.fechadesde)
-        .where("hora", "<=", Consulhistori.fechaasta + 86400000)
+        .where("hora", "<=", Consulhistori.fechaasta  )
         .get();
 
     return data.docs.map(d => d.data() as any);
